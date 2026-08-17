@@ -17,23 +17,10 @@ PanelWindow {
 
     readonly property real hubRadius: 124
     readonly property real centerX: width / 2
-    // Closer to true vertical centre than before (was .54): that left the
-    // bottom clearance much smaller than the top, which capped maxRadius
-    // far more than necessary.
     readonly property real centerY: height * 0.51
 
-    // Outer-ring radius budget: whatever clearance actually exists between
-    // the hub and the nearest edge (search bar on top, keyhints on bottom,
-    // window edges on the sides), minus a card-sized margin. Computed from
-    // the real window instead of copying the mockup's fixed 1920x1080
-    // numbers, which read as cramped on a smaller/differently-shaped screen.
     readonly property real maxRadius: Math.max(160, Math.min(centerY - 80, height - centerY - 100, width / 2 - 70) - 40)
 
-    // Beyond ~14 nodes the radial layout overlaps too much to read even with
-    // generous spacing -- applies whether that's the full catalog or a
-    // search match (typing one letter can still match dozens of apps). The
-    // full match count/set stays available for search (see countLabel and
-    // catalog.results), the radial view just stops trying to show it all.
     readonly property int maxVisible: 14
     readonly property var results: catalog.results
     readonly property var visibleResults: results.length > maxVisible ? results.slice(0, maxVisible) : results
@@ -68,14 +55,12 @@ PanelWindow {
 
     function toggle() { opened ? close() : openApps(); }
 
-    // Linear step (Tab): walks slot order regardless of position.
     function step(dir) {
         const count = visibleResults.length;
         if (count === 0) return;
         currentIndex = (currentIndex + dir + count) % count;
     }
 
-    // Directional step (arrow keys): nearest neighbour on the radial layout.
     function moveDirection(vx, vy) {
         if (currentIndex < 0) return;
         currentIndex = Radial.moveDir(radialLayout.slots, currentIndex, vx, vy);
@@ -92,7 +77,6 @@ PanelWindow {
 
     onVisibleResultsChanged: currentIndex = visibleResults.length > 0 ? Math.min(currentIndex < 0 ? 0 : currentIndex, visibleResults.length - 1) : -1
 
-    // ── backdrop ──
     Rectangle {
         anchors.fill: parent
         color: Theme.darkerBackground
@@ -155,7 +139,6 @@ PanelWindow {
             }
         }
 
-        // ── search bar ──
         Rectangle {
             id: searchBar
             anchors.top: parent.top
@@ -220,7 +203,6 @@ PanelWindow {
             }
         }
 
-        // ── watermark — bottom-right ──
         Row {
             anchors.right: parent.right
             anchors.bottom: parent.bottom

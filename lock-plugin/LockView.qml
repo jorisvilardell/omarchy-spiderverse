@@ -2,10 +2,6 @@ import QtQuick
 import QtQuick.Effects
 import "LockTheme.js" as Theme
 
-// Spider-Verse lock screen. Public interface (properties/signals/functions)
-// is unchanged from the packaged LockView.qml -- Service.qml (untouched,
-// handles real PAM auth + session-lock protocol) instantiates this exact
-// contract. Only the presentation below is new.
 Item {
   id: root
 
@@ -25,8 +21,6 @@ Item {
   readonly property int hubRadius: 150
   readonly property real centerX: width / 2
   readonly property real centerY: height * 0.545
-  // *0.9 leaves a bit of breathing room above the web (it was nearly
-  // touching the date text) instead of using every available pixel.
   readonly property real maxWebRadius: Math.max(260, Math.min(centerY - 40, height - centerY - 90, width / 2 - 60) * 0.9)
   readonly property bool errorState: failureMessage.length > 0
   readonly property int liveSpokes: Math.min(spokeCount, passwordInput.text.length)
@@ -66,7 +60,6 @@ Item {
     if (inputEnabled) Qt.callLater(forcePasswordFocus);
   }
 
-  // ── denied feedback: fires once on a real failureMessage transition ──
   property bool deniedFlash: false
   onFailureMessageChanged: {
     if (failureMessage.length > 0) {
@@ -81,9 +74,6 @@ Item {
     onTriggered: root.deniedFlash = false
   }
 
-  // ── real feedback tick: bumped on every actually-typed character and on a
-  // real denied attempt. Drives the web's hot-chord jitter below.
-  // Backspace/clear does not re-trigger it.
   property int pulseTick: 0
   property int prevPasswordLength: 0
   onPasswordTextChanged: {
@@ -93,7 +83,6 @@ Item {
   }
   onDeniedFlashChanged: if (deniedFlash) pulseTick++
 
-  // ── live clock ──
   property var now: new Date()
   Timer {
     interval: 1000
@@ -104,14 +93,6 @@ Item {
   readonly property string clockText: Qt.formatTime(now, "hh:mm")
   readonly property string dateText: Qt.formatDate(now, "dddd d MMMM").toUpperCase()
 
-  // Real auth already succeeded once `unlocking` flips true (Service.qml
-  // holds the still-secure surface up for ~450ms to let this play out before
-  // actually releasing the session lock). There's no live desktop behind this
-  // surface to cross-fade into (ext-session-lock-v1 hides it entirely until
-  // the real unlock), so instead of fading to a blank void we sharpen/zoom
-  // the same wallpaper up to its real, undimmed look and fade the UI chrome
-  // away -- by the time the real unlock cuts the surface, this frame already
-  // matches the plain desktop underneath, so the cut itself is invisible.
   Rectangle {
     anchors.fill: parent
     color: Theme.darkerBackground
@@ -143,11 +124,6 @@ Item {
       Behavior on contrast { NumberAnimation { duration: 440; easing.type: Easing.OutCubic } }
     }
 
-    // Pushes the real wallpaper's own hues (often blue/teal) toward the
-    // theme's indigo-violet so the web/hub/clock read against the same
-    // palette as the mockup instead of competing with photo colors. Fades
-    // away on unlock so the wallpaper's real colors show through, matching
-    // the plain desktop.
     Rectangle {
       anchors.fill: parent
       opacity: root.unlocking ? 0 : 0.6
@@ -166,8 +142,6 @@ Item {
       onPositionChanged: root.wakeRequested()
     }
 
-    // UI chrome (web/clock/hub) recedes and fades out on unlock, revealing
-    // the sharpened wallpaper above instead of sitting on top of a cut.
     Item {
       id: chrome
       anchors.fill: parent
@@ -189,7 +163,6 @@ Item {
       pulseTick: root.pulseTick
     }
 
-    // ── clock ──
     Column {
       anchors.horizontalCenter: parent.horizontalCenter
       y: Math.max(40, root.centerY - root.maxWebRadius - 190)
@@ -241,7 +214,6 @@ Item {
       }
     }
 
-    // ── hub ──
     Item {
       id: hub
       x: root.centerX - width / 2
@@ -277,14 +249,8 @@ Item {
         Behavior on border.color { ColorAnimation { duration: 120 } }
       }
 
-      // Password field alone now -- the Spider-Man logo above used to live in
-      // this Column but is now `heroSpider` (sibling, drawn above chrome) so
-      // it can grow past the hub's bounds on unlock without disturbing this
-      // layout.
       Item {
         anchors.horizontalCenter: parent.horizontalCenter
-        // Below heroSpider's actual visible (rest-scaled) bottom edge, same
-        // 14px gap the old Column spacing used.
         y: (heroSpider.y + heroSpider.height / 2 + (heroSpider.height * heroSpider.restScale) / 2 + 14) - hub.y
         width: Math.min(parent.width - 68, Math.max(120, passwordInput.implicitWidth + 24))
         height: 34
@@ -346,21 +312,8 @@ Item {
     }
     }
 
-    // Spider-Man silhouette (spiderlogoblack.png, high-res so it stays sharp
-    // once scaled up), drawn above chrome so it can grow well past the hub's
-    // bounds. On unlock (real auth already succeeded, see `unlocking` above):
-    // grows big first, then fades away as the wallpaper above finishes
-    // sharpening -- so it hands off to the plain desktop instead of just
-    // vanishing.
     Item {
       id: heroSpider
-      // The item's own geometry (not a `scale` transform) is what MultiEffect
-      // actually rasterizes at -- a small 157px item scaled up 6.5x via
-      // `scale` stayed a 157px-resolution texture stretched, hence the
-      // pixelation. Instead this is built at its full grown-in size (1024,
-      // matching sourceSize below) and *shrunk* down to the resting hub size
-      // via scale, so by the time it grows back to scale 1.0 it's showing
-      // its native resolution, never upsampled.
       readonly property real restScale: (root.hubRadius * 1.05) / 1024
       x: root.centerX - width / 2
       y: (root.centerY - 38) - height / 2
@@ -375,16 +328,12 @@ Item {
         anchors.fill: parent
         source: "SpidermanLogo.png"
         fillMode: Image.PreserveAspectFit
-        // Native file is 2500x3468 -- matches the item's grown-in size above.
         sourceSize.width: 1024
         sourceSize.height: 1024
         smooth: true
         visible: false
       }
 
-      // Fixed px offsets here would scale down to near-nothing at rest
-      // (restScale ~0.15) -- keep the glitch offset proportional to the
-      // item's own size instead, same ~1.9% ratio the old 157px/3px combo had.
       readonly property real glitchOffset: width * (3 / 157.5)
 
       MultiEffect {
@@ -411,12 +360,6 @@ Item {
         Behavior on colorizationColor { ColorAnimation { duration: 150 } }
       }
 
-      // Real PAM validation takes a moment (unavoidable, that's the actual
-      // auth happening) -- without this the hub just sits frozen during that
-      // gap and submitting a password reads as unresponsive. Pulse the spider
-      // gently while `authenticatingPassword` is genuinely true so the wait
-      // reads as "working" instead of "stuck". Never runs during `unlocking`
-      // (auth already resolved false by then, see Service.qml).
       SequentialAnimation {
         id: authPulse
         loops: Animation.Infinite
@@ -442,9 +385,6 @@ Item {
         duration: 260
         easing.type: Easing.InQuad
       }
-      // Starts a bit before the grow finishes (200ms, grow ends at 300ms) so
-      // there's no beat where it just sits at max size doing nothing -- ends
-      // at 460ms total.
       Timer { id: heroFadeDelay; interval: 200; onTriggered: heroFadeAnim.start() }
 
       Connections {
@@ -464,7 +404,6 @@ Item {
       }
     }
 
-    // ── access denied flash ──
     Item {
       anchors.horizontalCenter: parent.horizontalCenter
       y: root.centerY + root.hubRadius + 46

@@ -1,9 +1,6 @@
 import QtQuick
 import "SpiderverseTheme.js" as Theme
 
-// Central hub: shows the currently selected app. RGB-split initials (cyan +
-// red offsets behind the main glyph) stand in for the mockup's CSS
-// text-shadow, which has no direct QML equivalent.
 Item {
     id: hub
 

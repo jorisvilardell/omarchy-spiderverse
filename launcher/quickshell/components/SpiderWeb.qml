@@ -2,14 +2,6 @@ import QtQuick
 import QtQuick.Shapes
 import "SpiderverseTheme.js" as Theme
 
-// Renders the web: straight spokes from the hub to each node, sagging
-// quadratic-curve chords between nodes on the same ring, and one highlighted,
-// glowing spoke to the currently selected node.
-//
-// Shape's Repeater support requires Item delegates, and ShapePath is not an
-// Item -- so instead of repeating ShapePath instances, every spoke/chord is
-// flattened into one combined SVG path string (PathSvg accepts raw "M/L/Q"
-// commands, each "M" starting a new disconnected subpath).
 Item {
     id: web
 
@@ -54,10 +46,6 @@ Item {
         anchors.fill: parent
         preferredRendererType: Shape.CurveRenderer
 
-        // Faint diagonal threads between rings and a second inner echo band
-        // per ring -- drawn first (behind) so the primary spokes/chords stay
-        // crisp on top. This is what keeps the web reading as a mesh instead
-        // of bare spokes-in-a-circle.
         ShapePath {
             fillColor: "transparent"
             strokeColor: Qt.rgba(0.7, 0.62, 0.84, 0.16)

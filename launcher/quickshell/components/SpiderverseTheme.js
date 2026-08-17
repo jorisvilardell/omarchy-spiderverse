@@ -1,8 +1,5 @@
 .pragma library
 
-// Palette fixe, recopiee depuis ~/.config/omarchy/themes/spiderverse/colors.toml.
-// Volontairement non derivee du theme Omarchy actif: ce launcher reste
-// "spiderman" meme si l'utilisateur change de theme systeme plus tard.
 
 var background = "#160a2e";
 var darkBackground = "#0d0620";
@@ -34,7 +31,6 @@ var brightCyan = "#4de8ff";
 var brightBlue = "#6fa8ff";
 var brightMagenta = "#ff6ec7";
 
-// Teintes assignees par categorie d'app (mockup: APPS[].tint), cycliques.
 var categoryTints = {
     "terminal": cyan,
     "éditeur": green,

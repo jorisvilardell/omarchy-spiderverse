@@ -1,9 +1,4 @@
--- Spider-Verse: glitch-gradient border (magenta -> cyan -> violet) and a
--- punchier, "comic panel pop" animation set instead of the smooth defaults.
 
--- Minimal: a thin two-stop border (magenta -> violet) carries the identity;
--- no neon glow. A near-invisible shadow keeps just enough depth to separate
--- windows from the background.
 local active_border_color = { colors = { "rgba(ff2d95cc)", "rgba(4a2e7acc)" }, angle = 45 }
 local active_shadow_color = "rgba(0d0620aa)"
 local inactive_border_color = "rgba(2d1b4e88)"
@@ -36,8 +31,6 @@ hl.config({
   },
 })
 
--- easeOutBack-style overshoot: windows "pop" into place like a comic panel
--- slamming down, instead of easing in smoothly.
 hl.curve("spideyPop", { type = "bezier", points = { { 0.68, -0.55 }, { 0.27, 1.55 } } })
 hl.curve("glitchSnap", { type = "bezier", points = { { 0.15, 0 }, { 0.1, 1 } } })
 

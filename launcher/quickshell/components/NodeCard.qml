@@ -2,9 +2,6 @@ import QtQuick
 import QtQuick.Shapes
 import "SpiderverseTheme.js" as Theme
 
-// Comic-panel card: two opposite corners cut off (mirrors the mockup's CSS
-// clip-path), initials tinted by app category, active state pops with a
-// scale + accent border + a short "vibe" jitter.
 Item {
     id: card
 
@@ -25,8 +22,6 @@ Item {
 
     Behavior on cardSize { NumberAnimation { duration: 160; easing.type: Easing.OutBack; easing.overshoot: 3 } }
 
-    // "Vibe" jitter: a quick back-and-forth nudge played once when a card
-    // becomes active (ported from the mockup's sv-vibe keyframes).
     property real jitterX: 0
     property real jitterY: 0
     SequentialAnimation {
@@ -64,9 +59,6 @@ Item {
         spacing: 4
         width: parent.width - 12
 
-        // Real app icon when one resolves; RGB-split initials (CSS
-        // text-shadow has no QML equivalent, faked with offset duplicates)
-        // as a fallback for apps with no icon.
         Item {
             id: iconStack
             width: parent.width

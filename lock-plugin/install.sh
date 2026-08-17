@@ -3,11 +3,6 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Clone Omarchy's real lock service fresh from *your* current Omarchy
-# install, instead of shipping a copy of Service.qml in this repo. That file
-# is the real PAM auth + ext-session-lock-v1 logic -- a copy committed here
-# would freeze at today's version and silently miss any future Omarchy
-# security fixes. This way you always get your own, current Service.qml.
 omarchy plugin clone omarchy.lock --edit
 
 PLUGIN_DIR=$(find "$HOME/.config/omarchy/plugins" -maxdepth 1 -type d -name "*.lock" 2>/dev/null | head -n1)

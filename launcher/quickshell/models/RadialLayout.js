@@ -1,20 +1,7 @@
 .pragma library
 
-// Ported from the validated mockup (Spiderverse Launcher.dc.html): distributes
-// `list.length` items across up to 3 concentric rings around (cx, cy) and
-// provides directional (arrow-key) nearest-neighbour navigation between slots.
 
-// Ring radii as ratios of an outer-radius budget (matches the proportions of
-// the validated mockup, e.g. 3-ring: 195/350/445 -> .44/.79/1.0). Scaling by
-// an actual per-window maxRadius (see layout()) keeps the same generous
-// spacing on any monitor instead of the mockup's fixed 1920x1080 pixels,
-// which is what made an earlier pass read as cramped on a smaller screen.
-// Wider, more evenly-spaced gap between the outer two rings than the mockup
-// used (its .79/1.0 pair left too little radial clearance for our fixed
-// 84px cards once real screen sizes were plugged in, so nodes overlapped).
 var RADIUS_RATIOS = { 1: [0.5], 2: [0.55, 1.0], 3: [0.42, 0.72, 1.0] };
-// A gentle per-ring stagger -- enough to keep the web from reading as bare
-// spokes-in-a-circle, small enough that it doesn't twist into visual noise.
 var OFFSETS = [0, 8, 5];
 var CAPS = [6, 8, 9];
 
@@ -31,14 +18,6 @@ function ringsOf(count) {
     return [a, b, count - a - b];
 }
 
-// Returns { slots: [{ index, ring, radius, deg, x, y }], rings, radii }.
-// `list` is only used for its length here -- callers pair slots back to their
-// data by `index`. `maxRadius` is the outermost ring's radius in px -- pass
-// the actual clearance available in the window (see CommandSurface.qml).
-// `minRadius` floors every ring so the innermost one never lands closer to
-// centre than the hub's own edge -- without it, a small maxRadius (few
-// results, small window) could put ring 1 *inside* the hub circle, hiding
-// both the card and its spoke behind the hub's opaque fill.
 function layout(count, cx, cy, maxRadius, minRadius) {
     var rings = ringsOf(count);
     var ratios = RADIUS_RATIOS[rings.length] || RADIUS_RATIOS[3];
@@ -67,8 +46,6 @@ function layout(count, cx, cy, maxRadius, minRadius) {
     return { slots: out, rings: rings, radii: radii };
 }
 
-// Nearest neighbour in direction (vx, vy) from the current slot, scored by
-// distance penalised by how far off-axis the candidate is.
 function moveDir(slots, currentIndex, vx, vy) {
     var cur = null;
     for (var s = 0; s < slots.length; s++) {
@@ -96,9 +73,6 @@ function moveDir(slots, currentIndex, vx, vy) {
     return best ? best.index : currentIndex;
 }
 
-// Builds the spoke (hub -> node) and ring-chord (node -> node, same ring,
-// sagging quadratic curve) geometry for SpiderWeb.qml. hubRadius is the
-// distance from centre at which spokes start (the hub circle's edge).
 function buildWeb(slots, cx, cy, hubRadius) {
     var spokes = [];
     for (var i = 0; i < slots.length; i++) {
@@ -141,9 +115,6 @@ function buildWeb(slots, cx, cy, hubRadius) {
         return out;
     }
 
-    // Two concentric bands per ring (like a real web's circumferential
-    // threads doubling back near the radial spokes) instead of a single
-    // bare arc -- the inner band is a faint echo just inside the ring.
     var chords = [];
     var innerChords = [];
     Object.keys(byRing).forEach(function(r) {
@@ -159,9 +130,6 @@ function buildWeb(slots, cx, cy, hubRadius) {
         }
     });
 
-    // Diagonal threads from each node to its angularly-nearest neighbour one
-    // ring further in -- the connecting strands that make a web read as a
-    // mesh instead of concentric circles on spokes.
     var diagonals = [];
     var ringKeys = Object.keys(byRing).map(Number).sort(function(a, b) { return a - b; });
     for (var ri = 1; ri < ringKeys.length; ri++) {

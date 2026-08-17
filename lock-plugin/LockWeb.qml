@@ -2,11 +2,6 @@ import QtQuick
 import QtQuick.Shapes
 import "LockTheme.js" as Theme
 
-// Radial web background: 16 fixed spokes + 4 rings around the hub. Spokes
-// light up progressively with `liveCount` (mirrors the mockup, driven by the
-// real typed-password length -- the same length already shown via the
-// existing password dots, not a new leak) instead of representing app nodes
-// like the launcher's SpiderWeb.
 Item {
     id: web
 
@@ -77,9 +72,6 @@ Item {
 
     readonly property int hotRings: Math.ceil(liveCount / 4)
 
-    // Shape's Repeater support needs Item delegates, and ShapePath isn't one
-    // (same constraint as the launcher's SpiderWeb) -- batch cold/hot rings
-    // into two combined path strings instead of repeating ShapePath.
     readonly property string coldRingsSvg: {
         var parts = [];
         for (var i = 0; i < ringRatios.length; i++) {
@@ -97,9 +89,6 @@ Item {
         return parts.join(" ");
     }
 
-    // A quick jitter on the lit chords -- like a plucked string -- on every
-    // real keystroke / real denied attempt (pulseTick, bumped by LockView).
-    // A geometric wobble, not an opacity/scale pulse.
     property real jitterX: 0
     SequentialAnimation {
         id: jitterAnim
@@ -110,7 +99,6 @@ Item {
     }
     onPulseTickChanged: jitterAnim.restart()
 
-    // Spokes never jitter -- own Shape, no transform.
     Shape {
         anchors.fill: parent
         preferredRendererType: Shape.CurveRenderer
@@ -130,11 +118,6 @@ Item {
         }
     }
 
-    // All rings (chords) live here so the jitter is visible from the very
-    // first keystroke, not just once a ring has fully "lit up" -- a ring only
-    // turns hot every 4 characters and the innermost one is often hidden
-    // under the hub, so gating the jitter on hotRingsSvg alone made it look
-    // like nothing happened for the first few keystrokes.
     Shape {
         anchors.fill: parent
         preferredRendererType: Shape.CurveRenderer

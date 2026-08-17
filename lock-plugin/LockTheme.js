@@ -1,11 +1,5 @@
 .pragma library
 
-// Palette fixe, recopiee depuis ~/.config/omarchy/themes/spiderverse/colors.toml.
-// Copie independante (pas d'import inter-process du launcher): ce plugin
-// tourne dans le process omarchy-shell, toujours actif, distinct du process
-// autonome du launcher -- le coupler a ce dernier le rendrait fragile si ce
-// dossier est deplace ou supprime. Meme choix que le launcher: figee, pas
-// derivee du theme Omarchy actif.
 
 var background = "#160a2e";
 var darkBackground = "#0d0620";

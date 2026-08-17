@@ -1,14 +1,10 @@
 import QtQuick
 import "SpiderverseTheme.js" as Theme
 
-// Comic-print dot texture (ported from the mockup's CSS radial-gradient
-// backgrounds). True CSS mix-blend-mode:screen has no cheap QML equivalent at
-// full-screen size, so this falls back to a low-opacity static overlay --
-// visually close, painted once (not per-frame).
 Canvas {
     id: halftone
 
-    property real intensity: 0.5 // 0..1, mirrors the mockup's comicIntensity
+    property real intensity: 0.5 
 
     opacity: 0.02 + intensity * 0.07
     renderTarget: Canvas.Image
