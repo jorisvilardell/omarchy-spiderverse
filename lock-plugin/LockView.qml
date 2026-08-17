@@ -24,7 +24,6 @@ Item {
   readonly property real maxWebRadius: Math.max(260, Math.min(centerY - 40, height - centerY - 90, width / 2 - 60) * 0.9)
   readonly property bool errorState: failureMessage.length > 0
   readonly property int liveSpokes: Math.min(spokeCount, passwordInput.text.length)
-  readonly property string username: "Axel"
 
   signal submitPassword(string password)
   signal passwordTextEdited(string password)
