@@ -1,17 +1,21 @@
 # Spiderverse for Omarchy
 
 Across-the-Spider-Verse-inspired look for [Omarchy](https://omarchy.org)
-(Quattro): a theme, a radial app launcher, and an interactive lock screen.
-Three independent pieces -- take whichever ones you want.
+(Quattro): a radial app launcher and an interactive lock screen. Two
+independent pieces -- take whichever one you want.
+
+The matching color theme lives in its own repo,
+[spiderverse-theme](https://github.com/<you>/spiderverse-theme) -- Omarchy's
+`omarchy theme install <url>` clones a repo directly as the theme folder and
+expects the palette files at its root, which doesn't work from inside a
+monorepo subfolder.
 
 | Folder | What it is | Risk |
 |---|---|---|
-| [`theme/`](theme/) | Colors, background, window border/animation tweaks | None -- just an Omarchy theme |
 | [`launcher/`](launcher/) | Standalone radial app launcher (Quickshell) | None -- self-contained, no system hooks |
 | [`lock-plugin/`](lock-plugin/) | Restyled lock screen | Read its README first -- it clones Omarchy's real auth logic |
 
-Each folder has its own README and `install.sh` (theme is a plain copy, no
-script needed). Start with `theme/`, then add the others if you want them.
+Each folder has its own README and `install.sh`.
 
 ## Screenshots
 
