@@ -1,0 +1,18 @@
+# Spider-Verse overrides for the Omarchy shell surfaces. Everything not
+# listed here falls back to the generated defaults (see
+# default/themed/shell.toml.tpl), which already wire menu/launcher colors to
+# colors.toml (accent, background, foreground) and to the Hyprland border
+# gradient set in this theme's hyprland.lua.
+
+[menu]
+# Selected row: a visible thin accent outline instead of the near-invisible
+# default (0.25 alpha) — a small "spidey-sense" pop on the active item,
+# without any glow or gradient noise.
+selected-background-alpha = 0.12
+selected-border           = "{{ accent }}"
+selected-border-alpha     = 0.9
+
+[launcher]
+selected-background-alpha = 0.12
+selected-border           = "{{ accent }}"
+selected-border-alpha     = 0.9
