@@ -1,30 +1,34 @@
 # Spiderverse for Omarchy
 
-Across-the-Spider-Verse-inspired look for [Omarchy](https://omarchy.org)
-(Quattro): a radial app launcher and an interactive lock screen. Two
-independent pieces -- take whichever one you want.
+Across-the-Spider-Verse-inspired radial app launcher and lock screen for
+[Omarchy](https://omarchy.org) (Quattro). Two independent pieces -- take
+whichever one you want. Matching theme: [omarchy-spiderverse-theme](https://github.com/axelfrache/omarchy-spiderverse-theme).
 
-The matching color theme lives in its own repo,
-[omarchy-spiderverse-theme](https://github.com/axelfrache/omarchy-spiderverse-theme) -- Omarchy's
-`omarchy theme install <url>` clones a repo directly as the theme folder and
-expects the palette files at its root, which doesn't work from inside a
-monorepo subfolder.
+## Preview
 
-| Folder | What it is | Risk |
-|---|---|---|
-| [`launcher/`](launcher/) | Standalone radial app launcher (Quickshell) | None -- self-contained, no system hooks |
-| [`lock-plugin/`](lock-plugin/) | Restyled lock screen | Read its README first -- it clones Omarchy's real auth logic |
+![lock screen](lock-plugin/preview.png)
 
-Each folder has its own README and `install.sh`.
+## Launcher
 
-## Screenshots
+```bash
+git clone https://github.com/axelfrache/omarchy-spiderverse.git
+./omarchy-spiderverse/launcher/install.sh
+```
 
-Not included here -- run `omarchy-spiderverse-launcher toggle` or
-`qs -p /usr/share/omarchy/shell ipc call lock preview` after installing to
-see them live.
+Standalone Quickshell app, no system hooks. See
+[`launcher/`](launcher/) for keybindings and details.
+
+## Lock screen
+
+```bash
+./omarchy-spiderverse/lock-plugin/install.sh
+```
+
+Clones Omarchy's real lock service and overlays this theme on top. Read
+[`lock-plugin/README.md`](lock-plugin/README.md) first -- it explains what
+gets touched.
 
 ## Requirements
 
-- Omarchy Quattro (the `omarchy-shell` / Quickshell-based version -- this
-  won't apply to older hyprlock-based Omarchy setups)
-- `qs` (Quickshell CLI) available, which Omarchy already ships
+- Omarchy Quattro (the `omarchy-shell` / Quickshell-based version)
+- `qs` (Quickshell CLI), which Omarchy already ships
