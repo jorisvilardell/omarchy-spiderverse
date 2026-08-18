@@ -9,6 +9,16 @@ whichever one you want. Matching theme: [omarchy-spiderverse-theme](https://gith
 ![app launcher](launcher/preview.png)
 ![lock screen](lock-plugin/preview.png)
 
+## Install everything
+
+Theme + launcher + lock screen in one go:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/axelfrache/omarchy-spiderverse/main/install.sh | bash
+```
+
+Or pick just the pieces you want below.
+
 ## Launcher
 
 ```bash
@@ -29,8 +39,8 @@ Clones Omarchy's real lock service and overlays this theme on top. Read
 gets touched.
 
 Prefer to read the scripts before running them? Clone the repo instead and
-run `./launcher/install.sh` / `./lock-plugin/install.sh` locally -- same
-scripts, no piping to bash.
+run `./install.sh`, `./launcher/install.sh`, or `./lock-plugin/install.sh`
+locally -- same scripts, no piping to bash.
 
 ## Requirements
 

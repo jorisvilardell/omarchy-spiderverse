@@ -12,9 +12,14 @@ if [ -z "$SCRIPT_DIR" ] || [ ! -f "$SCRIPT_DIR/LockView.qml" ]; then
   exec bash "$TMP_DIR/repo/lock-plugin/install.sh"
 fi
 
-omarchy plugin clone omarchy.lock --edit
-
 PLUGIN_DIR=$(find "$HOME/.config/omarchy/plugins" -maxdepth 1 -type d -name "*.lock" 2>/dev/null | head -n1)
+
+if [ -n "$PLUGIN_DIR" ]; then
+  echo "Lock plugin already cloned at $PLUGIN_DIR -- reusing it, not re-cloning."
+else
+  omarchy plugin clone omarchy.lock --edit
+  PLUGIN_DIR=$(find "$HOME/.config/omarchy/plugins" -maxdepth 1 -type d -name "*.lock" 2>/dev/null | head -n1)
+fi
 
 if [ -z "$PLUGIN_DIR" ]; then
   echo "error: couldn't find the cloned plugin under ~/.config/omarchy/plugins/*.lock" >&2
