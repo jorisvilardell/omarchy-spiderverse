@@ -17,7 +17,7 @@ PanelWindow {
 
     readonly property real hubRadius: 124
     readonly property real centerX: width / 2
-    readonly property real centerY: height * 0.51
+    readonly property real centerY: height * 0.56
 
     readonly property real maxRadius: Math.max(160, Math.min(centerY - 80, height - centerY - 100, width / 2 - 70) - 40)
 
