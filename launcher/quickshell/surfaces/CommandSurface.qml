@@ -19,7 +19,7 @@ PanelWindow {
     readonly property real centerX: width / 2
     readonly property real centerY: height * 0.56
 
-    readonly property real maxRadius: Math.max(160, Math.min(centerY - 80, height - centerY - 100, width / 2 - 70) - 40)
+    readonly property real maxRadius: Math.max(160, Math.min(centerY - 80, height - centerY - 60, width / 2 - 70) - 20)
 
     readonly property int maxVisible: 14
     readonly property var results: catalog.results
