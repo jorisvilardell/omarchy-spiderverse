@@ -5,7 +5,7 @@ Across-the-Spider-Verse-inspired look for [Omarchy](https://omarchy.org)
 independent pieces -- take whichever one you want.
 
 The matching color theme lives in its own repo,
-[omarchy-spiderverse-theme](https://github.com/<you>/omarchy-spiderverse-theme) -- Omarchy's
+[omarchy-spiderverse-theme](https://github.com/axelfrache/omarchy-spiderverse-theme) -- Omarchy's
 `omarchy theme install <url>` clones a repo directly as the theme folder and
 expects the palette files at its root, which doesn't work from inside a
 monorepo subfolder.
