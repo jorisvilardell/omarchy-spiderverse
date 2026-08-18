@@ -203,32 +203,5 @@ PanelWindow {
             }
         }
 
-        Row {
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            anchors.margins: 44
-            spacing: 12
-
-            Rectangle {
-                width: 8; height: 8
-                anchors.verticalCenter: parent.verticalCenter
-                color: Theme.accent
-                SequentialAnimation on opacity {
-                    loops: Animation.Infinite
-                    NumberAnimation { to: 0.35; duration: 1200; easing.type: Easing.InOutQuad }
-                    NumberAnimation { to: 0.9; duration: 1200; easing.type: Easing.InOutQuad }
-                }
-            }
-
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-                text: "spiderverse · omarchy"
-                color: Theme.muted
-                font.family: "JetBrains Mono"
-                font.pixelSize: 13
-                font.letterSpacing: 1.4
-                font.capitalization: Font.AllUppercase
-            }
-        }
     }
 }
