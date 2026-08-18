@@ -1,7 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_URL="https://github.com/axelfrache/omarchy-spiderverse.git"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || echo "")"
+
+if [ -z "$SCRIPT_DIR" ] || [ ! -f "$SCRIPT_DIR/LockView.qml" ]; then
+  # Running via curl | bash -- no local clone to read from, so grab one.
+  TMP_DIR=$(mktemp -d)
+  trap 'rm -rf "$TMP_DIR"' EXIT
+  git clone --depth 1 "$REPO_URL" "$TMP_DIR/repo" >/dev/null 2>&1
+  exec bash "$TMP_DIR/repo/lock-plugin/install.sh"
+fi
 
 omarchy plugin clone omarchy.lock --edit
 

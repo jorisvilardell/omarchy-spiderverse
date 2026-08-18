@@ -12,8 +12,7 @@ whichever one you want. Matching theme: [omarchy-spiderverse-theme](https://gith
 ## Launcher
 
 ```bash
-git clone https://github.com/axelfrache/omarchy-spiderverse.git
-./omarchy-spiderverse/launcher/install.sh
+curl -fsSL https://raw.githubusercontent.com/axelfrache/omarchy-spiderverse/main/launcher/install.sh | bash
 ```
 
 Standalone Quickshell app, no system hooks. See
@@ -22,12 +21,16 @@ Standalone Quickshell app, no system hooks. See
 ## Lock screen
 
 ```bash
-./omarchy-spiderverse/lock-plugin/install.sh
+curl -fsSL https://raw.githubusercontent.com/axelfrache/omarchy-spiderverse/main/lock-plugin/install.sh | bash
 ```
 
 Clones Omarchy's real lock service and overlays this theme on top. Read
 [`lock-plugin/README.md`](lock-plugin/README.md) first -- it explains what
 gets touched.
+
+Prefer to read the scripts before running them? Clone the repo instead and
+run `./launcher/install.sh` / `./lock-plugin/install.sh` locally -- same
+scripts, no piping to bash.
 
 ## Requirements
 

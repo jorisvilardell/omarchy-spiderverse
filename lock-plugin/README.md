@@ -27,9 +27,11 @@ only overlays the four presentational files above onto that clone.
 ## Install
 
 ```bash
-./install.sh
+curl -fsSL https://raw.githubusercontent.com/axelfrache/omarchy-spiderverse/main/lock-plugin/install.sh | bash
 omarchy restart shell
 ```
+
+Or clone the repo and run `./install.sh` locally instead of piping to bash.
 
 ## Try it safely
 
