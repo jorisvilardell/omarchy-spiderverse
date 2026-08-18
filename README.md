@@ -6,6 +6,7 @@ whichever one you want. Matching theme: [omarchy-spiderverse-theme](https://gith
 
 ## Preview
 
+![app launcher](launcher/preview.png)
 ![lock screen](lock-plugin/preview.png)
 
 ## Launcher
