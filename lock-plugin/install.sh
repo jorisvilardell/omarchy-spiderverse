@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_URL="https://github.com/axelfrache/omarchy-spiderverse.git"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || echo "")"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-}")" 2>/dev/null && pwd || echo "")"
 
 if [ -z "$SCRIPT_DIR" ] || [ ! -f "$SCRIPT_DIR/LockView.qml" ]; then
   # Running via curl | bash -- no local clone to read from, so grab one.
