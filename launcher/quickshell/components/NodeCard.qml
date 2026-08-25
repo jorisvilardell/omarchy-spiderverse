@@ -7,6 +7,8 @@ Item {
 
     property string label: ""
     property string initialsText: ""
+    // Nerd Font glyphs need their own family; app initials keep the display face.
+    property string initialsFont: "Archivo Black"
     property url iconSource: ""
     property color tint: Theme.accent
     property bool active: false
@@ -86,7 +88,7 @@ Item {
                 text: card.initialsText
                 color: Theme.cyan
                 opacity: (card.active && !iconStack.imageVisible) ? 0.75 : 0
-                font.family: "Archivo Black"
+                font.family: card.initialsFont
                 font.pixelSize: 22
                 visible: !iconStack.imageVisible
             }
@@ -96,7 +98,7 @@ Item {
                 text: card.initialsText
                 color: Theme.red
                 opacity: (card.active && !iconStack.imageVisible) ? 0.75 : 0
-                font.family: "Archivo Black"
+                font.family: card.initialsFont
                 font.pixelSize: 22
                 visible: !iconStack.imageVisible
             }
@@ -105,7 +107,7 @@ Item {
                 anchors.centerIn: parent
                 text: card.initialsText
                 color: card.active ? Theme.foreground : card.tint
-                font.family: "Archivo Black"
+                font.family: card.initialsFont
                 font.pixelSize: 22
                 visible: !iconStack.imageVisible
             }

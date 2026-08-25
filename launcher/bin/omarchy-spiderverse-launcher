@@ -63,6 +63,13 @@ case "${1:-status}" in
       send_ipc toggle
     }
     ;;
+  menu)
+    # Omarchy's own menu tree, rendered on the web.
+    qs -c "$CONFIG_NAME" ipc call command menu 2>/dev/null || {
+      start_shell
+      send_ipc menu
+    }
+    ;;
   close)
     is_running && send_ipc close
     ;;
@@ -78,7 +85,7 @@ case "${1:-status}" in
     exec qs log -c "$CONFIG_NAME"
     ;;
   *)
-    echo "Usage: omarchy-spiderverse-launcher {start|stop|restart|toggle|close|status|log}" >&2
+    echo "Usage: omarchy-spiderverse-launcher {start|stop|restart|toggle|menu|close|status|log}" >&2
     exit 2
     ;;
 esac

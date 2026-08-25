@@ -5,6 +5,7 @@ Item {
     id: hub
 
     property string initialsText: "??"
+    property string initialsFont: "Archivo Black"
     property url iconSource: ""
     property string appName: "no results"
     property string category: ""
@@ -54,7 +55,7 @@ Item {
                 text: hub.initialsText
                 color: Theme.cyan
                 opacity: iconStack.imageVisible ? 0 : 0.7
-                font.family: "Archivo Black"
+                font.family: hub.initialsFont
                 font.pixelSize: 46
                 visible: !iconStack.imageVisible
             }
@@ -64,7 +65,7 @@ Item {
                 text: hub.initialsText
                 color: Theme.red
                 opacity: iconStack.imageVisible ? 0 : 0.7
-                font.family: "Archivo Black"
+                font.family: hub.initialsFont
                 font.pixelSize: 46
                 visible: !iconStack.imageVisible
             }
@@ -73,7 +74,7 @@ Item {
                 anchors.centerIn: parent
                 text: hub.initialsText
                 color: Theme.accent
-                font.family: "Archivo Black"
+                font.family: hub.initialsFont
                 font.pixelSize: 46
                 visible: !iconStack.imageVisible
             }

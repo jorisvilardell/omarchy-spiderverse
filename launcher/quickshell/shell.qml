@@ -38,6 +38,7 @@ ShellRoot {
         target: "command"
         function toggle(): void { commandSurface.toggle(); }
         function apps(): void { commandSurface.openApps(); }
+        function menu(): void { commandSurface.toggleMenu(); }
         function close(): void { commandSurface.close(); }
     }
 }

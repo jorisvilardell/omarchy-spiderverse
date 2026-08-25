@@ -63,3 +63,8 @@ function initials(name) {
     var clean = String(name || "").replace(/[^A-Za-zÀ-ÿ]/g, "");
     return clean.slice(0, 2).toUpperCase();
 }
+
+// Menu rows carry Nerd Font glyphs rather than an icon file. The stock Omarchy
+// menu renders them in the shell font; this keeps a single place to override
+// the family if a machine has a different Nerd Font installed.
+var glyphFont = "JetBrainsMono Nerd Font";

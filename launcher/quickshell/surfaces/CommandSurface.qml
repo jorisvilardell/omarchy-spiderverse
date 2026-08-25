@@ -13,6 +13,10 @@ PanelWindow {
     property bool showContent: false
     property int currentIndex: -1
 
+    // "apps"  the desktop-entry catalogue, this launcher's original surface
+    // "menu"  Omarchy's own menu tree, rendered on the same web
+    property string mode: "apps"
+
     property var targetScreen: null
 
     readonly property real hubRadius: 124
@@ -22,7 +26,7 @@ PanelWindow {
     readonly property real maxRadius: Math.max(160, Math.min(centerY - 80, height - centerY - 60, width / 2 - 70) - 20)
 
     readonly property int maxVisible: 14
-    readonly property var results: catalog.results
+    readonly property var results: mode === "menu" ? menuCatalog.results : catalog.results
     readonly property var visibleResults: results.length > maxVisible ? results.slice(0, maxVisible) : results
     readonly property var radialLayout: Radial.layout(visibleResults.length, centerX, centerY, maxRadius, hubRadius + 50)
     readonly property var web: Radial.buildWeb(radialLayout.slots, centerX, centerY, hubRadius)
@@ -37,14 +41,26 @@ PanelWindow {
     WlrLayershell.namespace: "omarchy-spiderverse-launcher"
     WlrLayershell.keyboardFocus: visible ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-    function openApps() {
-        if (opened) return;
+    function open(which) {
+        mode = which;
         search.text = "";
         catalog.query = "";
-        currentIndex = catalog.results.length > 0 ? 0 : -1;
+        menuCatalog.query = "";
+        if (which === "menu") menuCatalog.path = "";
+        currentIndex = results.length > 0 ? 0 : -1;
         opened = true;
         showContent = true;
         Qt.callLater(function() { search.forceActiveFocus(); });
+    }
+
+    function openApps() {
+        if (opened && mode === "apps") return;
+        open("apps");
+    }
+
+    function openMenu() {
+        if (opened && mode === "menu") return;
+        open("menu");
     }
 
     function close() {
@@ -53,7 +69,8 @@ PanelWindow {
         opened = false;
     }
 
-    function toggle() { opened ? close() : openApps(); }
+    function toggle() { opened && mode === "apps" ? close() : openApps(); }
+    function toggleMenu() { opened && mode === "menu" ? close() : openMenu(); }
 
     function step(dir) {
         const count = visibleResults.length;
@@ -69,11 +86,37 @@ PanelWindow {
     function launchCurrent() {
         if (!currentEntry) return;
         const entry = currentEntry;
-        catalog.launch(entry);
-        close();
+
+        if (mode !== "menu") {
+            catalog.launch(entry);
+            close();
+            return;
+        }
+
+        const outcome = menuCatalog.enter(entry);
+        if (outcome === "close") { close(); return; }
+        if (outcome === "apps") { open("apps"); return; }
+        if (outcome === "descend") {
+            // Same as the stock menu: entering a submenu clears the query, so
+            // the next keystrokes filter the level you just walked into.
+            search.text = "";
+            menuCatalog.query = "";
+            currentIndex = results.length > 0 ? 0 : -1;
+        }
+    }
+
+    // Backspace on an empty query walks back up, the way Escape-then-reopen
+    // would, without leaving the web.
+    function goUp() {
+        if (mode !== "menu") return false;
+        if (search.text.length > 0) { search.text = ""; return true; }
+        if (!menuCatalog.up()) return false;
+        currentIndex = results.length > 0 ? 0 : -1;
+        return true;
     }
 
     ApplicationCatalog { id: catalog }
+    MenuCatalog { id: menuCatalog }
 
     onVisibleResultsChanged: currentIndex = visibleResults.length > 0 ? Math.min(currentIndex < 0 ? 0 : currentIndex, visibleResults.length - 1) : -1
 
@@ -108,10 +151,16 @@ PanelWindow {
         HubPanel {
             x: surface.centerX - width / 2
             y: surface.centerY - height / 2
-            initialsText: surface.currentEntry ? Theme.initials(surface.currentEntry.label) : "??"
-            iconSource: surface.currentEntry && surface.currentEntry.icon ? catalog.resolvedIcon(surface.currentEntry.icon) : ""
+            initialsText: surface.currentEntry
+                ? (surface.mode === "menu" ? surface.currentEntry.glyph : Theme.initials(surface.currentEntry.label))
+                : "??"
+            initialsFont: surface.mode === "menu" ? Theme.glyphFont : "Archivo Black"
+            iconSource: surface.mode !== "menu" && surface.currentEntry && surface.currentEntry.icon
+                ? catalog.resolvedIcon(surface.currentEntry.icon)
+                : ""
             appName: surface.currentEntry ? surface.currentEntry.label : "no results"
             category: surface.currentEntry ? (surface.currentEntry.description || "") : ""
+            execLabel: surface.mode === "menu" && surface.currentEntry && surface.currentEntry.kind === "submenu" ? "submenu" : ""
         }
 
         Repeater {
@@ -126,8 +175,9 @@ PanelWindow {
                 z: modelData.index === surface.currentIndex ? 10 : 1
 
                 label: entry ? entry.label : ""
-                initialsText: entry ? Theme.initials(entry.label) : ""
-                iconSource: entry && entry.icon ? catalog.resolvedIcon(entry.icon) : ""
+                initialsText: entry ? (surface.mode === "menu" ? entry.glyph : Theme.initials(entry.label)) : ""
+                initialsFont: surface.mode === "menu" ? Theme.glyphFont : "Archivo Black"
+                iconSource: surface.mode !== "menu" && entry && entry.icon ? catalog.resolvedIcon(entry.icon) : ""
                 tint: Theme.tintFor(entry ? entry.description : "", modelData.index)
                 active: modelData.index === surface.currentIndex
 
@@ -166,9 +216,14 @@ PanelWindow {
                 anchors.right: parent.right
                 anchors.rightMargin: 20
                 anchors.verticalCenter: parent.verticalCenter
-                text: surface.visibleResults.length < surface.results.length
-                    ? (surface.visibleResults.length + " shown / " + surface.results.length + " apps")
-                    : (surface.results.length + " / " + catalog.applications.length + " apps")
+                text: {
+                    const unit = surface.mode === "menu" ? " entries" : " apps";
+                    if (surface.visibleResults.length < surface.results.length)
+                        return surface.visibleResults.length + " shown / " + surface.results.length + unit;
+                    if (surface.mode === "menu")
+                        return menuCatalog.title + " · " + surface.results.length + unit;
+                    return surface.results.length + " / " + catalog.applications.length + unit;
+                }
                 color: Theme.muted
                 font.family: "JetBrains Mono"
                 font.pixelSize: 13
@@ -187,6 +242,11 @@ PanelWindow {
                 focus: true
 
                 Keys.onEscapePressed: text.length > 0 ? (text = "") : surface.close()
+                Keys.onPressed: (event) => {
+                    if (event.key === Qt.Key_Backspace && text.length === 0 && surface.goUp()) {
+                        event.accepted = true;
+                    }
+                }
                 Keys.onReturnPressed: surface.launchCurrent()
                 Keys.onTabPressed: (event) => { surface.step(event.modifiers & Qt.ShiftModifier ? -1 : 1); }
                 Keys.onUpPressed: surface.moveDirection(0, -1)
@@ -199,7 +259,10 @@ PanelWindow {
                     if (cursorPosition === text.length) surface.moveDirection(1, 0);
                     else event.accepted = false;
                 }
-                onTextChanged: catalog.query = text
+                onTextChanged: {
+                    catalog.query = text;
+                    menuCatalog.query = text;
+                }
             }
         }
 

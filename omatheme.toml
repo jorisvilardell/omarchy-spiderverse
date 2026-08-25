@@ -1,0 +1,27 @@
+# Payload manifest. Read by `omatheme install <this repo url>`, which copies the
+# files named below into a theme's directory so the lock screen and launcher
+# follow that theme instead of being installed once and forever.
+#
+# Ignore this file if you install with ./install.sh — the one-shot path does not
+# need it. See README.md.
+
+[payload]
+name = "Spiderverse"
+description = "Radial web launcher and lock screen for the Spiderverse theme"
+# Default target, so `omatheme install <url>` needs no second argument. Pass
+# --theme to graft the payload onto a different theme.
+theme = "spiderverse"
+
+[lock]
+# Presentational QML only. Service.qml holds the PAM and ext-session-lock-v1
+# logic and is deliberately absent: omatheme reclones it from the running
+# Omarchy on every theme switch, so it always tracks upstream.
+overlay = "lock-plugin/qml"
+
+[launcher]
+command = "omarchy-spiderverse-launcher"
+quickshell = { source = "launcher/quickshell", name = "spiderverse-launcher" }
+bin = "launcher/bin/omarchy-spiderverse-launcher"
+autostart = true
+# Keybindings speak `menu` and `apps`; this launcher says `menu` and `toggle`.
+verbs = { menu = "menu", apps = "toggle" }

@@ -4,7 +4,7 @@ set -euo pipefail
 REPO_URL="https://github.com/axelfrache/omarchy-spiderverse.git"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-}")" 2>/dev/null && pwd || echo "")"
 
-if [ -z "$SCRIPT_DIR" ] || [ ! -f "$SCRIPT_DIR/LockView.qml" ]; then
+if [ -z "$SCRIPT_DIR" ] || [ ! -f "$SCRIPT_DIR/qml/LockView.qml" ]; then
   # Running via curl | bash -- no local clone to read from, so grab one.
   TMP_DIR=$(mktemp -d)
   trap 'rm -rf "$TMP_DIR"' EXIT
@@ -28,8 +28,10 @@ if [ -z "$PLUGIN_DIR" ]; then
   exit 1
 fi
 
-cp "$SCRIPT_DIR/LockView.qml" "$SCRIPT_DIR/LockWeb.qml" "$SCRIPT_DIR/LockTheme.js" "$SCRIPT_DIR/SpidermanLogo.png" "$PLUGIN_DIR/"
+cp "$SCRIPT_DIR"/qml/{LockView.qml,LockWeb.qml,LockTheme.js,SpidermanLogo.png} "$PLUGIN_DIR/"
 
 echo "Installed into $PLUGIN_DIR"
 echo "(Service.qml there is Omarchy's own file -- this script never touches it.)"
-echo "Run 'omarchy restart shell' to pick it up."
+omarchy restart shell >/dev/null 2>&1 || echo "Run 'omarchy restart shell' to pick it up."
+echo
+echo "To go back to Omarchy's own lock screen: ./lock-plugin/uninstall.sh"
